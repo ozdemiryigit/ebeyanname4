@@ -71,10 +71,12 @@ CLASS zcl_tax_vat1_dec_report DEFINITION
     TYPES topal  TYPE ztax_t_kdv1g-topal.
     TYPES topalk TYPE ztax_t_kdv1g-topalk.
     TYPES shkzg  TYPE ztax_t_kdv1g-shkzg.
+    TYPES islem_tur TYPE ztax_t_kdv1g-islem_tur. "YiğitcanÖzdemir
     TYPES kural  TYPE ztax_t_k1k2s-kural.
     TYPES acklm1 TYPE ztax_t_k1k1-acklm.
     TYPES acklm2 TYPE ztax_t_k1k2-acklm.
     TYPES blart TYPE ztax_t_kdv1g-blart.
+
     TYPES END OF mty_map.
 
     TYPES mtty_map TYPE TABLE OF mty_map.
@@ -147,6 +149,7 @@ CLASS zcl_tax_vat1_dec_report DEFINITION
     TYPES kiril2    TYPE ztax_t_kdv1g-kiril2.
     TYPES acklm2    TYPE ztax_e_acklm.
     TYPES kiril3    TYPE ztax_e_acklm.
+    TYPES islem_turu    TYPE ztax_ddl_i_vat1_dec_report-islem_tur.
     TYPES matrah    TYPE ztax_ddl_i_vat1_dec_report-matrah.
     TYPES oran      TYPE ztax_ddl_i_vat1_dec_report-oran.
     TYPES tevkifat  TYPE ztax_ddl_i_vat1_dec_report-tevkifat.

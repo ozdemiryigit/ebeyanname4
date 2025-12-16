@@ -9,6 +9,7 @@
            ztax_t_kdv1g~topal  ,
            ztax_t_kdv1g~topalk ,
            ztax_t_kdv1g~shkzg  ,
+           ztax_t_kdv1g~islem_tur  ,
            ztax_t_k1k2s~kural  ,
            ztax_t_k1k1~acklm  AS acklm1 ,
            ztax_t_k1k2~acklm  AS acklm2,

@@ -73,7 +73,7 @@ authorization dependent by _CompanyCodes
 {
   update;
   delete;
-  field ( readonly : update ) CompanyCode, Refrection1, Refrection2, TaxCode, GLAccountNumber;
+  field ( readonly : update ) CompanyCode, Refrection1, Refrection2, TaxCode, GLAccountNumber,blart;
   association _SubHead;
   association _CompanyCodes;
 
@@ -88,5 +88,7 @@ authorization dependent by _CompanyCodes
       TotalAreaRules  = topalk;
       DCIndicator     = shkzg;
       blart           = blart;
+      islem_tur       = islem_tur;
+
     }
 }
