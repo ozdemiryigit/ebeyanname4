@@ -1359,10 +1359,10 @@
             CLEAR ls_collect.
             ls_collect-kiril1 = ls_map-kiril1.
             ls_collect-acklm1 = ls_map-acklm1.
-            IF ls_bset-shkzg EQ 'H'.
+            IF ls_credit-shkzg EQ 'H'.
               ls_collect-matrah = ls_credit-tutar * -1.
 *              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
+            ELSEIF ls_credit-shkzg EQ 'S'.
               ls_collect-matrah = ls_credit-tutar.
 *              ls_collect-vergi  = ls_bset-hwste.
             ENDIF.
@@ -1374,10 +1374,10 @@
             ls_collect-acklm1 = ls_map-acklm1.
             ls_collect-kiril2 = ls_map-kiril2.
             ls_collect-acklm2 = ls_map-acklm2.
-            IF ls_bset-shkzg EQ 'S'.
+            IF ls_credit-shkzg EQ 'S'.
               ls_collect-matrah = ls_credit-tutar * -1.
 *              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'H'.
+            ELSEIF ls_credit-shkzg EQ 'H'.
               ls_collect-matrah = ls_credit-tutar.
 *              ls_collect-vergi  = ls_bset-hwste.
             ENDIF.
@@ -1396,10 +1396,10 @@
 *            lv_oran_int = abs( ls_bset-kbetr ) .
 *            ls_collect-oran = lv_oran_int.
             SHIFT ls_collect-oran LEFT DELETING LEADING space.
-            IF ls_bset-shkzg EQ 'H'.
+            IF ls_credit-shkzg EQ 'H'.
               ls_collect-matrah = ls_credit-tutar * -1.
 *              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
+            ELSEIF ls_credit-shkzg EQ 'S'.
               ls_collect-matrah = ls_credit-tutar.
 *              ls_collect-vergi  = ls_bset-hwste.
             ENDIF.
