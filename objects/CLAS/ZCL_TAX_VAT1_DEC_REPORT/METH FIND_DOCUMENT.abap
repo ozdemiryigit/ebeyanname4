@@ -165,7 +165,7 @@
 
 
       SELECT
-      j~taxcode AS mwskz , r~ConditionRateRatio AS kbetr ,r~vatconditiontype AS kschl,j~accountingdocumenttype AS blart, j~glaccount as hkont,
+      j~taxcode AS mwskz , r~ConditionRateRatio AS kbetr ,r~vatconditiontype AS kschl,j~accountingdocumenttype AS blart, j~glaccount AS hkont,
         SUM( CASE WHEN ( j~transactiontypedetermination = 'VST' OR
                  j~transactiontypedetermination = 'MWS' )  THEN j~amountincompanycodecurrency ELSE 0 END ) AS hwste,
         SUM( CASE WHEN ( j~transactiontypedetermination <> 'VST' AND
@@ -189,6 +189,9 @@
          GROUP BY j~taxcode, r~ConditionRateRatio,r~vatconditiontype, j~accountingdocumenttype,j~glaccount
       ORDER BY j~taxcode
       INTO CORRESPONDING FIELDS OF TABLE @et_bset   .
+
+
+
 
 
 
