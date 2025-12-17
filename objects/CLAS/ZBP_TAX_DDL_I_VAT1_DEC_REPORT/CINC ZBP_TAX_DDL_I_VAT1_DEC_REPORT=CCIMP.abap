@@ -576,272 +576,276 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
                     INTO lv_xml_string
                     SEPARATED BY space.
 
+        READ TABLE lt_kiril1 INTO ls_kiril1 WHERE kiril1 = '109'.
+        IF sy-subrc EQ 0 .
+          CLEAR lv_xml.
+          CONCATENATE '<kdv109sorumluSifatiylaOdenenBildirimler>'
+       '<kdv109sorumluSifatiylaOdenenBildirim>'
+       '<odemeTur>1</odemeTur>'
+       '<vergilendirmeDonemi>2025102025YUK10</vergilendirmeDonemi>'
+       '<odemeMahsupDilekceTarihi>25112025</odemeMahsupDilekceTarihi>'
+       '<tutar>43534.07</tutar>'
+     '</kdv109sorumluSifatiylaOdenenBildirim>'
+     '</kdv109sorumluSifatiylaOdenenBildirimler>'
+       INTO lv_xml.
+
+          CONCATENATE lv_xml_string
+               lv_xml
+               INTO lv_xml_string
+               SEPARATED BY space.
+        ENDIF.
+
       ENDIF.
 
-      LOOP AT lt_kiril1 INTO ls_kiril1 ."WHERE kiril1 EQ ls_bxmls_gk1-kiril1. "1712025 YiğitcanÖzdemir
-        IF ls_kiril1-kiril1 = ls_bxmls_gk1-kiril1 OR ls_kiril1-kiril1 = '109'.
-
-          IF ls_kiril1-kiril1 = '109'.
-
-
-            CONCATENATE '<kdv109sorumluSifatiylaOdenenBildirimler>'
-                '<kdv109sorumluSifatiylaOdenenBildirim>'
-                '<odemeTur>1</odemeTur>'
-                '<vergilendirmeDonemi>2025102025YUK10</vergilendirmeDonemi>'
-                '<odemeMahsupDilekceTarihi>25112025</odemeMahsupDilekceTarihi>'
-                '<tutar>43534.07</tutar>'
-              '</kdv109sorumluSifatiylaOdenenBildirim>'
-              '</kdv109sorumluSifatiylaOdenenBildirimler>'
-                INTO lv_xml.
+      LOOP AT lt_kiril1 INTO ls_kiril1 WHERE kiril1 EQ ls_bxmls_gk1-kiril1.
 
 
 
-          ELSE.
-            IF ( ls_kiril1-matrah EQ '0.00' AND ls_kiril1-vergi EQ '0.00' ) AND ( ls_kiril1-kiril1 NE '030' ).
-              CONTINUE.
+        IF ( ls_kiril1-matrah EQ '0.00' AND ls_kiril1-vergi EQ '0.00' ) AND ( ls_kiril1-kiril1 NE '030' ).
+          CONTINUE.
+        ENDIF.
+        CASE ls_bxmls_gk1-seviye .
+
+          WHEN '900'.
+
+            CLEAR lv_char_amount1.
+            IF ls_kiril1-vergi NE 0.
+              lv_char_amount1 = ls_kiril1-vergi.
+            ELSEIF ls_kiril1-matrah NE 0.
+              lv_char_amount1 = ls_kiril1-matrah.
+            ELSEIF ls_kiril1-tevkifat NE 0.
+              lv_char_amount1 = ls_kiril1-tevkifat.
             ENDIF.
-            CASE ls_bxmls_gk1-seviye .
+            IF ls_kiril1-kiril1 EQ '030' AND lv_char_amount1 IS INITIAL.
+              lv_char_amount1 = '0.00'.
+            ENDIF.
 
-              WHEN '900'.
+            CLEAR lv_xml.
+            CONCATENATE '<'
+                        ls_bxmls_gk1-xmlacklm
+                        '>'
+                        lv_char_amount1
+                        '</'
+                        ls_bxmls_gk1-xmlacklm
+                        '>'
+                        INTO lv_xml.
+            CONDENSE lv_xml NO-GAPS.
+            CONCATENATE lv_xml_string
+                        lv_xml
+                        INTO lv_xml_string
+                        SEPARATED BY space.
 
-                CLEAR lv_char_amount1.
-                IF ls_kiril1-vergi NE 0.
-                  lv_char_amount1 = ls_kiril1-vergi.
-                ELSEIF ls_kiril1-matrah NE 0.
-                  lv_char_amount1 = ls_kiril1-matrah.
-                ELSEIF ls_kiril1-tevkifat NE 0.
-                  lv_char_amount1 = ls_kiril1-tevkifat.
+          WHEN OTHERS.
+
+            CLEAR lv_xml.
+            READ TABLE lt_bxmls INTO ls_bxmls WITH KEY kiril1 = ls_kiril1-kiril1.
+            IF sy-subrc IS INITIAL.
+              CLEAR lv_xml.
+              CONCATENATE '<'
+              ls_bxmls-xmlacklm
+              '>'
+              INTO lv_xml.
+
+              CONCATENATE lv_xml_string
+                          lv_xml
+                          INTO lv_xml_string
+                          SEPARATED BY space.
+            ENDIF.
+
+            CLEAR lv_xml.
+            CLEAR lv_kiril3_loop.
+            LOOP AT lt_kiril2 INTO ls_kiril2 WHERE kiril1 EQ ls_kiril1-kiril1.
+              CLEAR lv_index.
+              LOOP AT lt_kiril3_sum INTO ls_kiril3 WHERE kiril1 EQ ls_kiril1-kiril1
+                                                     AND kiril2 EQ ls_kiril2-kiril2.
+
+                IF ( ls_kiril3-matrah EQ '0.00' AND ls_kiril3-vergi EQ '0.00' ) AND ls_kiril3-kiril1 NE '030'."Kredi Kartı sıfır XML'de görünsün isteniyor.
+                  CONTINUE.
                 ENDIF.
-                IF ls_kiril1-kiril1 EQ '030' AND lv_char_amount1 IS INITIAL.
-                  lv_char_amount1 = '0.00'.
+                READ TABLE lt_rule INTO ls_rule WITH KEY kiril1 = ls_kiril3-kiril1
+                                                         kiril2 = ls_kiril3-kiril2.
+
+                IF NOT ( ls_kiril1-kiril1 EQ '011' OR ls_kiril1-kiril1 EQ '005' ).
+                  IF ( ls_rule-kural EQ '001' OR ls_rule-kural EQ '003' ) AND ( ls_kiril3-oran EQ space OR ls_kiril3-oran EQ '0' ).
+                    CONTINUE.
+                  ENDIF.
                 ENDIF.
-
-                CLEAR lv_xml.
-                CONCATENATE '<'
-                            ls_bxmls_gk1-xmlacklm
-                            '>'
-                            lv_char_amount1
-                            '</'
-                            ls_bxmls_gk1-xmlacklm
-                            '>'
-                            INTO lv_xml.
-                CONDENSE lv_xml NO-GAPS.
-                CONCATENATE lv_xml_string
-                            lv_xml
-                            INTO lv_xml_string
-                            SEPARATED BY space.
-
-              WHEN OTHERS.
-
-                CLEAR lv_xml.
-                READ TABLE lt_bxmls INTO ls_bxmls WITH KEY kiril1 = ls_kiril1-kiril1.
+                FIELD-SYMBOLS <fs_out_tev> TYPE STANDARD TABLE.        "YiğitcanÖzdemir
+                READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
                 IF sy-subrc IS INITIAL.
                   CLEAR lv_xml.
                   CONCATENATE '<'
-                  ls_bxmls-xmlacklm
-                  '>'
-                  INTO lv_xml.
+                              ls_bxmls_desc-xmlacklm
+                              '>'
+                              INTO lv_xml.
 
                   CONCATENATE lv_xml_string
                               lv_xml
                               INTO lv_xml_string
                               SEPARATED BY space.
+
+                  IF ls_bxmls_desc-xmlacklm EQ 'kismiTevkifatUygulananEk'.
+                    lv_index = lv_index + 1.
+                    IF <fs_out_tev> IS ASSIGNED.
+                      READ TABLE <fs_out_tev> ASSIGNING <fs_line> INDEX lv_index.
+                    ENDIF.
+                  ENDIF.
                 ENDIF.
 
                 CLEAR lv_xml.
-                CLEAR lv_kiril3_loop.
-                LOOP AT lt_kiril2 INTO ls_kiril2 WHERE kiril1 EQ ls_kiril1-kiril1.
-                  CLEAR lv_index.
-                  LOOP AT lt_kiril3_sum INTO ls_kiril3 WHERE kiril1 EQ ls_kiril1-kiril1
-                                                         AND kiril2 EQ ls_kiril2-kiril2.
+                CLEAR lv_char_amount1.
+                CLEAR lv_char_amount2.
+                CLEAR lv_char_amount3.
+                CLEAR lv_islem.
+                CLEAR lv_oran.
+                CLEAR lv_ad.
+                CLEAR lv_ek_tckn.
+                CLEAR lv_ek_unvan.
+                CLEAR lv_ek_tarih.
+                CLEAR lv_ek_serino.
+                CLEAR lv_ek_sırano.
 
-                    IF ( ls_kiril3-matrah EQ '0.00' AND ls_kiril3-vergi EQ '0.00' ) AND ls_kiril3-kiril1 NE '030'."Kredi Kartı sıfır XML'de görünsün isteniyor.
-                      CONTINUE.
-                    ENDIF.
-                    READ TABLE lt_rule INTO ls_rule WITH KEY kiril1 = ls_kiril3-kiril1
-                                                             kiril2 = ls_kiril3-kiril2.
+                IF <fs_line> IS ASSIGNED.
+                  ASSIGN COMPONENT 'STCD2' OF STRUCTURE <fs_line> TO <fs_value>.
+                  IF <fs_value> IS ASSIGNED.
+                    lv_ek_tckn = <fs_value>.
+                    UNASSIGN <fs_value>.
+                  ENDIF.
+                  ASSIGN COMPONENT 'NAME1' OF STRUCTURE <fs_line> TO <fs_value>.
+                  IF <fs_value> IS ASSIGNED.
+                    lv_ek_unvan = <fs_value>.
+                    UNASSIGN <fs_value>.
+                  ENDIF.
+                  ASSIGN COMPONENT 'BLDAT' OF STRUCTURE <fs_line> TO <fs_value>.
+                  IF <fs_value> IS ASSIGNED.
+                    lv_ek_tarih = <fs_value>.
+                    lv_ek_tarih =  |{ lv_ek_tarih+6(2) }| & |{ lv_ek_tarih+4(2) }| & |{ lv_ek_tarih(4) }|.
+                    UNASSIGN <fs_value>.
+                  ENDIF.
+                  ASSIGN COMPONENT 'SERINO' OF STRUCTURE <fs_line> TO <fs_value>.
+                  IF <fs_value> IS ASSIGNED.
+                    lv_ek_serino = <fs_value>.
+                    UNASSIGN <fs_value>.
+                  ENDIF.
+                  ASSIGN COMPONENT 'SIRANO' OF STRUCTURE <fs_line> TO <fs_value>.
+                  IF <fs_value> IS ASSIGNED.
+                    lv_ek_sırano = <fs_value>.
+                    UNASSIGN <fs_value>.
+                  ENDIF.
+                  UNASSIGN <fs>.
+                ENDIF.
 
-                    IF NOT ( ls_kiril1-kiril1 EQ '011' OR ls_kiril1-kiril1 EQ '005' ).
-                      IF ( ls_rule-kural EQ '001' OR ls_rule-kural EQ '003' ) AND ( ls_kiril3-oran EQ space OR ls_kiril3-oran EQ '0' ).
-                        CONTINUE.
-                      ENDIF.
-                    ENDIF.
-                    FIELD-SYMBOLS <fs_out_tev> TYPE STANDARD TABLE.        "YiğitcanÖzdemir
-                    READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
-                    IF sy-subrc IS INITIAL.
-                      CLEAR lv_xml.
-                      CONCATENATE '<'
-                                  ls_bxmls_desc-xmlacklm
-                                  '>'
-                                  INTO lv_xml.
+                lv_char_amount1 = ls_kiril3-matrah.
+                lv_char_amount2 = ls_kiril3-oran.
+                lv_char_amount3 = ls_kiril3-vergi.
+                lv_islem        = ls_kiril3-kiril2.
+                lv_oran         = ls_kiril3-tevkifato.
+                lv_ad           = ls_kiril3-acklm2.
+                SHIFT lv_char_amount1 LEFT DELETING LEADING space.
+                SHIFT lv_char_amount2 LEFT DELETING LEADING space.
+                SHIFT lv_char_amount3 LEFT DELETING LEADING space.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                IF lv_islem IS NOT INITIAL AND ( ls_kiril3-kiril1 EQ '003' OR ls_kiril3-kiril1 EQ '031' ).
 
-                      IF ls_bxmls_desc-xmlacklm EQ 'kismiTevkifatUygulananEk'.
-                        lv_index = lv_index + 1.
-                        IF <fs_out_tev> IS ASSIGNED.
-                          READ TABLE <fs_out_tev> ASSIGNING <fs_line> INDEX lv_index.
-                        ENDIF.
-                      ENDIF.
-                    ENDIF.
-
-                    CLEAR lv_xml.
-                    CLEAR lv_char_amount1.
-                    CLEAR lv_char_amount2.
-                    CLEAR lv_char_amount3.
-                    CLEAR lv_islem.
-                    CLEAR lv_oran.
-                    CLEAR lv_ad.
-                    CLEAR lv_ek_tckn.
-                    CLEAR lv_ek_unvan.
-                    CLEAR lv_ek_tarih.
-                    CLEAR lv_ek_serino.
-                    CLEAR lv_ek_sırano.
-
-                    IF <fs_line> IS ASSIGNED.
-                      ASSIGN COMPONENT 'STCD2' OF STRUCTURE <fs_line> TO <fs_value>.
-                      IF <fs_value> IS ASSIGNED.
-                        lv_ek_tckn = <fs_value>.
-                        UNASSIGN <fs_value>.
-                      ENDIF.
-                      ASSIGN COMPONENT 'NAME1' OF STRUCTURE <fs_line> TO <fs_value>.
-                      IF <fs_value> IS ASSIGNED.
-                        lv_ek_unvan = <fs_value>.
-                        UNASSIGN <fs_value>.
-                      ENDIF.
-                      ASSIGN COMPONENT 'BLDAT' OF STRUCTURE <fs_line> TO <fs_value>.
-                      IF <fs_value> IS ASSIGNED.
-                        lv_ek_tarih = <fs_value>.
-                        lv_ek_tarih =  |{ lv_ek_tarih+6(2) }| & |{ lv_ek_tarih+4(2) }| & |{ lv_ek_tarih(4) }|.
-                        UNASSIGN <fs_value>.
-                      ENDIF.
-                      ASSIGN COMPONENT 'SERINO' OF STRUCTURE <fs_line> TO <fs_value>.
-                      IF <fs_value> IS ASSIGNED.
-                        lv_ek_serino = <fs_value>.
-                        UNASSIGN <fs_value>.
-                      ENDIF.
-                      ASSIGN COMPONENT 'SIRANO' OF STRUCTURE <fs_line> TO <fs_value>.
-                      IF <fs_value> IS ASSIGNED.
-                        lv_ek_sırano = <fs_value>.
-                        UNASSIGN <fs_value>.
-                      ENDIF.
-                      UNASSIGN <fs>.
+                  IF ls_kiril3-kiril1 EQ '031'.
+                    READ TABLE lt_kiril3 INTO ls_kiril3_ek WITH KEY kiril1 = '003'
+                                                                 kiril3 = ls_kiril3-kiril3.
+                    IF sy-subrc EQ 0.
+                      lv_islem = ls_kiril3_ek-kiril2.
                     ENDIF.
 
-                    lv_char_amount1 = ls_kiril3-matrah.
-                    lv_char_amount2 = ls_kiril3-oran.
-                    lv_char_amount3 = ls_kiril3-vergi.
-                    lv_islem        = ls_kiril3-kiril2.
-                    lv_oran         = ls_kiril3-tevkifato.
-                    lv_ad           = ls_kiril3-acklm2.
-                    SHIFT lv_char_amount1 LEFT DELETING LEADING space.
-                    SHIFT lv_char_amount2 LEFT DELETING LEADING space.
-                    SHIFT lv_char_amount3 LEFT DELETING LEADING space.
+                  ENDIF.
 
-                    IF lv_islem IS NOT INITIAL AND ( ls_kiril3-kiril1 EQ '003' OR ls_kiril3-kiril1 EQ '031' ).
+                  CLEAR lv_xml.
+                  CONCATENATE '<kismiTevkifatUygulananIslemTuru>'
+                              lv_islem
+                              '</kismiTevkifatUygulananIslemTuru>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                      IF ls_kiril3-kiril1 EQ '031'.
-                        READ TABLE lt_kiril3 INTO ls_kiril3_ek WITH KEY kiril1 = '003'
-                                                                     kiril3 = ls_kiril3-kiril3.
-                        IF sy-subrc EQ 0.
-                          lv_islem = ls_kiril3_ek-kiril2.
-                        ENDIF.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                      ENDIF.
+                  CLEAR lv_xml.
+                  CONCATENATE '<tevkifatOrani>'
+                              lv_oran
+                              '</tevkifatOrani>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                      CLEAR lv_xml.
-                      CONCATENATE '<kismiTevkifatUygulananIslemTuru>'
-                                  lv_islem
-                                  '</kismiTevkifatUygulananIslemTuru>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                ENDIF.
 
-                      CLEAR lv_xml.
-                      CONCATENATE '<tevkifatOrani>'
-                                  lv_oran
-                                  '</tevkifatOrani>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
+                IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '005'.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CLEAR lv_xml.
+                  CONCATENATE '<islemTuru>'
+                              lv_islem
+                              '</islemTuru>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                    ENDIF.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                    IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '005'.
+                ENDIF.
 
-                      CLEAR lv_xml.
-                      CONCATENATE '<islemTuru>'
-                                  lv_islem
-                                  '</islemTuru>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
+                IF ls_kiril3-kiril1 EQ '015'."<<Alper NANTU 015 için alt tagler eklendi ve NE 13 015 için muaf tutuldu.
+                  CLEAR lv_xml.
+                  CONCATENATE '<ihracKayitliTeslimlerIslemTuru>'
+                              ls_kiril3-kiril2
+                              '</ihracKayitliTeslimlerIslemTuru>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                    ENDIF.
+                  CLEAR lv_xml.
+                  CONCATENATE '<teslimBedeli>'
+                              lv_char_amount1
+                              '</teslimBedeli>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                    IF ls_kiril3-kiril1 EQ '015'."<<Alper NANTU 015 için alt tagler eklendi ve NE 13 015 için muaf tutuldu.
-                      CLEAR lv_xml.
-                      CONCATENATE '<ihracKayitliTeslimlerIslemTuru>'
-                                  ls_kiril3-kiril2
-                                  '</ihracKayitliTeslimlerIslemTuru>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CLEAR lv_xml.
+                  CONCATENATE '<oran>'
+                              '0.00'
+                              '</oran>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                      CLEAR lv_xml.
-                      CONCATENATE '<teslimBedeli>'
-                                  lv_char_amount1
-                                  '</teslimBedeli>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CLEAR lv_xml.
+                  CONCATENATE '<hesaplananKDV>'
+                              '0.00'
+                              '</hesaplananKDV>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                      CLEAR lv_xml.
-                      CONCATENATE '<oran>'
-                                  '0.00'
-                                  '</oran>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<hesaplananKDV>'
-                                  '0.00'
-                                  '</hesaplananKDV>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
 
 *                ELSEIF ls_kiril3-kiril1 NE '013'.                        "YiğitcanÖzdemir 16122025 kapatıldı
 *                  CLEAR lv_xml.
@@ -858,345 +862,345 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
 *                ENDIF.
 *                IF ls_kiril3-kiril1 NE '015'."Alper NANTU 015 için         "YiğitcanÖzdemir 16122025 kapatıldı
 
-                    ELSEIF NOT ( ls_kiril3-kiril1 EQ '013' OR ls_kiril3-kiril1 EQ '034' ) . "YiğitcanÖzdemir 16122025 açıldı
-                      IF ls_kiril3-islem_tur IS NOT INITIAL.
-                        CLEAR lv_xml.
-                        CONCATENATE '<tevkifatUygulanmayanIslemTuru>'
-                                    ls_kiril3-islem_tur
-                                    '</tevkifatUygulanmayanIslemTuru>'
-                                    INTO lv_xml.
-                        CONDENSE lv_xml NO-GAPS.
-
-                        CONCATENATE lv_xml_string
-                                    lv_xml
-                                    INTO lv_xml_string
-                                    SEPARATED BY space.
-                      ENDIF.
-                      CLEAR lv_xml.
-                      CONCATENATE '<matrah>'
-                                  lv_char_amount1
-                                  '</matrah>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-                    ENDIF.
-                    IF NOT ( ls_kiril3-kiril1 EQ '015' OR ls_kiril3-kiril1 EQ '034' ) ."Alper NANTU 015 için "YiğitcanÖzdemir 16122025 açıldı
-
-
-
-                      CLEAR lv_xml.
-
-                      CONCATENATE '<oran>'
-                                  lv_char_amount2
-                                  '</oran>'
-                                  INTO lv_xml.
-
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                    ENDIF."Alper NANTU 015 için bu if eklendi.
-                    IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '011'.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<indirimTuru>'
-                                  lv_islem
-                                  '</indirimTuru>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-
-                    ENDIF.
-
-                    IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '016'.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<kod>'
-                                  lv_islem
-                                  '</kod>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<teslimVeHizmetTutari>'
-                                  lv_char_amount1
-                                  '</teslimVeHizmetTutari>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<yuklenilenKDV>'
-                                  lv_char_amount3
-                                  '</yuklenilenKDV>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-
-                    ENDIF.
-
-                    IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '019'.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<islemTuru>'
-                                  lv_islem
-                                  '</islemTuru>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<teslimVeHizmetTutari>'
-                                  lv_char_amount1
-                                  '</teslimVeHizmetTutari>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<yuklenilenKDV>'
-                                  lv_char_amount3
-                                  '</yuklenilenKDV>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-
-                    ENDIF.
-
-                    IF ls_kiril3-kiril1 EQ '013'.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<bedel>'
-                                  lv_char_amount1
-                                  '</bedel>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<KDVTutari>'
-                                  lv_char_amount3
-                                  '</KDVTutari>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-
-                    ENDIF.
-
-                    IF NOT ( ls_kiril3-kiril1 EQ '031' OR ls_kiril3-kiril1 EQ '013' ).
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<vergi>'
-                                  lv_char_amount3
-                                  '</vergi>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-                    ENDIF.
-
-                    IF ls_kiril3-kiril1 EQ '031'.
-                      CLEAR lv_xml.
-                      CONCATENATE '<tckn>'
-                                  lv_ek_tckn
-                                  '</tckn>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<unvan>'
-                                  lv_ek_unvan
-                                  '</unvan>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<faturaBelgeTarihi>'
-                                  lv_ek_tarih
-                                  '</faturaBelgeTarihi>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<seriNo>'
-                                  lv_ek_serino
-                                  '</seriNo>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '<siraNo>'
-                                  lv_ek_sırano
-                                  '</siraNo>'
-                                  INTO lv_xml.
-                      CONDENSE lv_xml NO-GAPS.
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-                    ENDIF.
-
-                    READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
-                    IF sy-subrc IS INITIAL.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '</'
-                                  ls_bxmls_desc-xmlacklm
-                                  '>'
-                                  INTO lv_xml.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-
-
-                    ENDIF.
-
-                  ENDLOOP.
-                  IF sy-subrc IS INITIAL.
-                    lv_kiril3_loop = abap_true.
-                  ELSEIF sy-subrc IS NOT INITIAL.
-
-                    READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
-                    IF sy-subrc IS INITIAL.
-                      CLEAR lv_xml.
-                      CONCATENATE '<'
-                                  ls_bxmls_desc-xmlacklm
-                                  '>'
-                                  INTO lv_xml.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
-                    ENDIF.
-
-
+                ELSEIF NOT ( ls_kiril3-kiril1 EQ '013' OR ls_kiril3-kiril1 EQ '034' ) . "YiğitcanÖzdemir 16122025 açıldı
+                  IF ls_kiril3-islem_tur IS NOT INITIAL.
                     CLEAR lv_xml.
-                    CLEAR lv_char_amount1.
-                    CLEAR lv_char_amount2.
-                    CLEAR lv_char_amount3.
-
-
-                    lv_char_amount1 = ls_kiril2-matrah.
-                    lv_char_amount2 = ls_kiril2-oran.
-                    lv_char_amount3 = ls_kiril2-vergi.
-                    SHIFT lv_char_amount1 LEFT DELETING LEADING space.
-                    SHIFT lv_char_amount2 LEFT DELETING LEADING space.
-                    SHIFT lv_char_amount3 LEFT DELETING LEADING space.
-
-                    CLEAR lv_xml.
-                    CONCATENATE '<matrah>'
-                                lv_char_amount1
-                                '</matrah>'
+                    CONCATENATE '<tevkifatUygulanmayanIslemTuru>'
+                                ls_kiril3-islem_tur
+                                '</tevkifatUygulanmayanIslemTuru>'
                                 INTO lv_xml.
                     CONDENSE lv_xml NO-GAPS.
+
                     CONCATENATE lv_xml_string
                                 lv_xml
                                 INTO lv_xml_string
                                 SEPARATED BY space.
+                  ENDIF.
+                  CLEAR lv_xml.
+                  CONCATENATE '<matrah>'
+                              lv_char_amount1
+                              '</matrah>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
 
-                    CLEAR lv_xml.
-                    CONCATENATE '<oran>'
-                                lv_char_amount2
-                                '</oran>'
-                                INTO lv_xml.
-                    CONDENSE lv_xml NO-GAPS.
-                    CONCATENATE lv_xml_string
-                                lv_xml
-                                INTO lv_xml_string
-                                SEPARATED BY space.
-
-                    CLEAR lv_xml.
-                    CONCATENATE '<vergi>'
-                                lv_char_amount1
-                                '</vergi>'
-                                INTO lv_xml.
-                    CONDENSE lv_xml NO-GAPS.
-                    CONCATENATE lv_xml_string
-                                lv_xml
-                                INTO lv_xml_string
-                                SEPARATED BY space.
-
-                    READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
-                    IF sy-subrc IS INITIAL.
-
-                      CLEAR lv_xml.
-                      CONCATENATE '</'
-                                  ls_bxmls_desc-xmlacklm
-                                  '>'
-                                  INTO lv_xml.
-
-                      CONCATENATE lv_xml_string
-                                  lv_xml
-                                  INTO lv_xml_string
-                                  SEPARATED BY space.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+                ENDIF.
+                IF NOT ( ls_kiril3-kiril1 EQ '015' OR ls_kiril3-kiril1 EQ '034' ) ."Alper NANTU 015 için "YiğitcanÖzdemir 16122025 açıldı
 
 
-                    ENDIF.
+
+                  CLEAR lv_xml.
+
+                  CONCATENATE '<oran>'
+                              lv_char_amount2
+                              '</oran>'
+                              INTO lv_xml.
+
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                ENDIF."Alper NANTU 015 için bu if eklendi.
+                IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '011'.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<indirimTuru>'
+                              lv_islem
+                              '</indirimTuru>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
+
+                IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '016'.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<kod>'
+                              lv_islem
+                              '</kod>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<teslimVeHizmetTutari>'
+                              lv_char_amount1
+                              '</teslimVeHizmetTutari>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<yuklenilenKDV>'
+                              lv_char_amount3
+                              '</yuklenilenKDV>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
+
+                IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '019'.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<islemTuru>'
+                              lv_islem
+                              '</islemTuru>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<teslimVeHizmetTutari>'
+                              lv_char_amount1
+                              '</teslimVeHizmetTutari>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<yuklenilenKDV>'
+                              lv_char_amount3
+                              '</yuklenilenKDV>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
+
+                IF ls_kiril3-kiril1 EQ '013'.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<bedel>'
+                              lv_char_amount1
+                              '</bedel>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<KDVTutari>'
+                              lv_char_amount3
+                              '</KDVTutari>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
+
+                IF NOT ( ls_kiril3-kiril1 EQ '031' OR ls_kiril3-kiril1 EQ '013' ).
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<vergi>'
+                              lv_char_amount3
+                              '</vergi>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+                ENDIF.
+
+                IF ls_kiril3-kiril1 EQ '031'.
+                  CLEAR lv_xml.
+                  CONCATENATE '<tckn>'
+                              lv_ek_tckn
+                              '</tckn>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<unvan>'
+                              lv_ek_unvan
+                              '</unvan>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<faturaBelgeTarihi>'
+                              lv_ek_tarih
+                              '</faturaBelgeTarihi>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<seriNo>'
+                              lv_ek_serino
+                              '</seriNo>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<siraNo>'
+                              lv_ek_sırano
+                              '</siraNo>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+                ENDIF.
+
+                READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
+                IF sy-subrc IS INITIAL.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '</'
+                              ls_bxmls_desc-xmlacklm
+                              '>'
+                              INTO lv_xml.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
+
+              ENDLOOP.
+              IF sy-subrc IS INITIAL.
+                lv_kiril3_loop = abap_true.
+              ELSEIF sy-subrc IS NOT INITIAL.
+
+                READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
+                IF sy-subrc IS INITIAL.
+                  CLEAR lv_xml.
+                  CONCATENATE '<'
+                              ls_bxmls_desc-xmlacklm
+                              '>'
+                              INTO lv_xml.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+                ENDIF.
+
+
+                CLEAR lv_xml.
+                CLEAR lv_char_amount1.
+                CLEAR lv_char_amount2.
+                CLEAR lv_char_amount3.
+
+
+                lv_char_amount1 = ls_kiril2-matrah.
+                lv_char_amount2 = ls_kiril2-oran.
+                lv_char_amount3 = ls_kiril2-vergi.
+                SHIFT lv_char_amount1 LEFT DELETING LEADING space.
+                SHIFT lv_char_amount2 LEFT DELETING LEADING space.
+                SHIFT lv_char_amount3 LEFT DELETING LEADING space.
+
+                CLEAR lv_xml.
+                CONCATENATE '<matrah>'
+                            lv_char_amount1
+                            '</matrah>'
+                            INTO lv_xml.
+                CONDENSE lv_xml NO-GAPS.
+                CONCATENATE lv_xml_string
+                            lv_xml
+                            INTO lv_xml_string
+                            SEPARATED BY space.
+
+                CLEAR lv_xml.
+                CONCATENATE '<oran>'
+                            lv_char_amount2
+                            '</oran>'
+                            INTO lv_xml.
+                CONDENSE lv_xml NO-GAPS.
+                CONCATENATE lv_xml_string
+                            lv_xml
+                            INTO lv_xml_string
+                            SEPARATED BY space.
+
+                CLEAR lv_xml.
+                CONCATENATE '<vergi>'
+                            lv_char_amount1
+                            '</vergi>'
+                            INTO lv_xml.
+                CONDENSE lv_xml NO-GAPS.
+                CONCATENATE lv_xml_string
+                            lv_xml
+                            INTO lv_xml_string
+                            SEPARATED BY space.
+
+                READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
+                IF sy-subrc IS INITIAL.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '</'
+                              ls_bxmls_desc-xmlacklm
+                              '>'
+                              INTO lv_xml.
+
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+
+                ENDIF.
 *<<Alper NANTU 019 XML hatası için commmentlendi.
 *                CLEAR lv_xml.
 *                READ TABLE lt_bxmls INTO ls_bxmls WITH KEY kiril1 = ls_kiril1-kiril1.
@@ -1213,28 +1217,26 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
 *                              SEPARATED BY space.
 *                ENDIF.
 *>>Alper NANTU 019
-                  ENDIF.
+              ENDIF.
 
-                ENDLOOP.
-                IF lv_kiril3_loop EQ abap_true.
-                  CLEAR lv_xml.
-                  READ TABLE lt_bxmls INTO ls_bxmls WITH KEY kiril1 = ls_kiril1-kiril1.
-                  IF sy-subrc IS INITIAL.
-                    CLEAR lv_xml.
-                    CONCATENATE '</'
-                    ls_bxmls-xmlacklm
-                    '>'
-                    INTO lv_xml.
+            ENDLOOP.
+            IF lv_kiril3_loop EQ abap_true.
+              CLEAR lv_xml.
+              READ TABLE lt_bxmls INTO ls_bxmls WITH KEY kiril1 = ls_kiril1-kiril1.
+              IF sy-subrc IS INITIAL.
+                CLEAR lv_xml.
+                CONCATENATE '</'
+                ls_bxmls-xmlacklm
+                '>'
+                INTO lv_xml.
 
-                    CONCATENATE lv_xml_string
-                                lv_xml
-                                INTO lv_xml_string
-                                SEPARATED BY space.
-                  ENDIF.
-                ENDIF.
-            ENDCASE.
-          ENDIF.
-        ENDIF." ls_kiril1-kiril1 = ls_bxmls_gk1-kiril1 OR ls_kiril1-kiril1 = '109'. YiğitcanÖzdemir
+                CONCATENATE lv_xml_string
+                            lv_xml
+                            INTO lv_xml_string
+                            SEPARATED BY space.
+              ENDIF.
+            ENDIF.
+        ENDCASE.
       ENDLOOP.
       IF ls_bxmls_gk1-kiril1 EQ '031'.
         CLEAR lv_xml.
