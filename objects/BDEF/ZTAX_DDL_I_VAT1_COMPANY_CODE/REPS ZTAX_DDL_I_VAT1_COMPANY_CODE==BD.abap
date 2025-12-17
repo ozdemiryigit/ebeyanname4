@@ -89,6 +89,7 @@ authorization dependent by _CompanyCodes
       DCIndicator     = shkzg;
       blart           = blart;
       islem_tur       = islem_tur;
+      odeme_tur       = odeme_tur;
 
     }
 }

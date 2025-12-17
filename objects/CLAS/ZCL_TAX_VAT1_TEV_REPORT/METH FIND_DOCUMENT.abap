@@ -2,9 +2,12 @@
 
     FIELD-SYMBOLS <fs_bkpf> TYPE mty_bkpf.
 
-    DATA lt_bkpf_rmrp TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY awref_rev gjahr_rev.
-    DATA lt_bkpf_vbrk TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY awref_rev.
-    DATA lt_bkpf_rev  TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY bukrs stblg stjah.
+*    DATA lt_bkpf_rmrp TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY awref_rev gjahr_rev.
+    DATA lt_bkpf_rmrp TYPE TABLE OF mty_bkpf.
+*    DATA lt_bkpf_vbrk TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY awref_rev.
+    DATA lt_bkpf_vbrk TYPE  TABLE OF mty_bkpf .
+    DATA lt_bkpf_rev  TYPE TABLE OF mty_bkpf .
+*    DATA lt_bkpf_rev  TYPE SORTED TABLE OF mty_bkpf WITH NON-UNIQUE KEY bukrs stblg stjah.
     DATA ls_bkpf_rev_cont TYPE mty_bkpf_rev_cont.
     DATA lt_bkpf_rev_cont TYPE SORTED TABLE OF mty_bkpf_rev_cont WITH UNIQUE KEY bukrs belnr gjahr.
     DATA ls_rbkp TYPE mty_rbkp.
@@ -30,90 +33,92 @@
            WHERE i_journalentry~CompanyCode  EQ @p_bukrs
              AND i_journalentry~FiscalYear   EQ @p_gjahr
              AND i_journalentry~FiscalPeriod IN @mr_monat
+             AND i_journalentry~IsReversal   EQ ''
+             AND i_journalentry~IsReversed   EQ ''
              INTO TABLE @et_bkpf.
 
     IF sy-subrc IS NOT INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT et_bkpf ASSIGNING <fs_bkpf> WHERE awtyp EQ 'RMRP'.
-      CASE strlen( <fs_bkpf>-aworg_rev ).
-        WHEN 4.
-          <fs_bkpf>-gjahr_rev = <fs_bkpf>-aworg_rev.
-      ENDCASE.
-    ENDLOOP.
+*    LOOP AT et_bkpf ASSIGNING <fs_bkpf> WHERE awtyp EQ 'RMRP'.
+*      CASE strlen( <fs_bkpf>-aworg_rev ).
+*        WHEN 4.
+*          <fs_bkpf>-gjahr_rev = <fs_bkpf>-aworg_rev.
+*      ENDCASE.
+*    ENDLOOP.
+*
+*    "elemination logic. - 1
+*    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_rmrp.
+*    DELETE lt_bkpf_rmrp WHERE awtyp     NE 'RMRP' OR
+*                              awref_rev EQ space.
+*
+*    IF lines( lt_bkpf_rmrp ) GT 0.
+*      SELECT i_supplierinvoiceapi01~SupplierInvoice AS belnr ,
+*             i_supplierinvoiceapi01~FiscalYear      AS gjahr ,
+*             i_supplierinvoiceapi01~PostingDate     AS budat
+*             FROM i_supplierinvoiceapi01
+*             INNER JOIN @lt_bkpf_rmrp AS rmrp
+*             ON i_supplierinvoiceapi01~SupplierInvoice EQ rmrp~awref_rev
+*               AND i_supplierinvoiceapi01~FiscalYear      EQ rmrp~gjahr_rev
+*            INTO TABLE @lt_rbkp.
+*
+*      LOOP AT lt_rbkp INTO ls_rbkp.
+*        DELETE et_bkpf WHERE awref_rev  EQ ls_rbkp-belnr
+*                         AND gjahr_rev  EQ ls_rbkp-gjahr
+*                         AND budat+4(2) EQ ls_rbkp-budat+4(2).
+*      ENDLOOP.
+*    ENDIF.
 
-    "elemination logic. - 1
-    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_rmrp.
-    DELETE lt_bkpf_rmrp WHERE awtyp     NE 'RMRP' OR
-                              awref_rev EQ space.
+*    CLEAR lt_bkpf_rmrp.
+*    CLEAR lt_rbkp.
+*
+*    "elemination logic - 2
+*    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_vbrk.
+*    DELETE lt_bkpf_vbrk WHERE awtyp     NE 'VBRK' OR
+*                              awref_rev EQ space.
 
-    IF lines( lt_bkpf_rmrp ) GT 0.
-      SELECT i_supplierinvoiceapi01~SupplierInvoice AS belnr ,
-             i_supplierinvoiceapi01~FiscalYear      AS gjahr ,
-             i_supplierinvoiceapi01~PostingDate     AS budat
-             FROM i_supplierinvoiceapi01
-             FOR ALL ENTRIES IN @lt_bkpf_rmrp
-             WHERE i_supplierinvoiceapi01~SupplierInvoice EQ @lt_bkpf_rmrp-awref_rev
-               AND i_supplierinvoiceapi01~FiscalYear      EQ @lt_bkpf_rmrp-gjahr_rev
-            INTO TABLE @lt_rbkp.
+*    IF lines( lt_bkpf_vbrk ) GT 0.
+*      SELECT i_billingdocumentbasic~BillingDocument     AS vbeln,
+*             i_billingdocumentbasic~BillingDocumentDate AS fkdat
+*             FROM i_billingdocumentbasic
+*            INNER JOIN @lt_bkpf_vbrk AS vbrk
+*             ON BillingDocument EQ vbrk~awref_rev
+*             INTO TABLE @lt_vbrk.
+*
+*      LOOP AT lt_vbrk INTO ls_vbrk.
+*        DELETE et_bkpf WHERE awref_rev  EQ ls_vbrk-vbeln
+*                         AND budat+4(2) EQ ls_vbrk-fkdat+4(2).
+*      ENDLOOP.
+*    ENDIF.
 
-      LOOP AT lt_rbkp INTO ls_rbkp.
-        DELETE et_bkpf WHERE awref_rev  EQ ls_rbkp-belnr
-                         AND gjahr_rev  EQ ls_rbkp-gjahr
-                         AND budat+4(2) EQ ls_rbkp-budat+4(2).
-      ENDLOOP.
-    ENDIF.
-
-    CLEAR lt_bkpf_rmrp.
-    CLEAR lt_rbkp.
-
-    "elemination logic - 2
-    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_vbrk.
-    DELETE lt_bkpf_vbrk WHERE awtyp     NE 'VBRK' OR
-                              awref_rev EQ space.
-
-    IF lines( lt_bkpf_vbrk ) GT 0.
-      SELECT i_billingdocumentbasic~BillingDocument     AS vbeln,
-             i_billingdocumentbasic~BillingDocumentDate AS fkdat
-             FROM i_billingdocumentbasic
-             FOR ALL ENTRIES IN @lt_bkpf_vbrk
-             WHERE BillingDocument EQ @lt_bkpf_vbrk-awref_rev
-             INTO TABLE @lt_vbrk.
-
-      LOOP AT lt_vbrk INTO ls_vbrk.
-        DELETE et_bkpf WHERE awref_rev  EQ ls_vbrk-vbeln
-                         AND budat+4(2) EQ ls_vbrk-fkdat+4(2).
-      ENDLOOP.
-    ENDIF.
-
-    CLEAR lt_vbrk.
-    CLEAR lt_bkpf_vbrk.
+*    CLEAR lt_vbrk.
+*    CLEAR lt_bkpf_vbrk.
 
     "elemination logic - 3
-    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_rev.
-    DELETE lt_bkpf_rev WHERE ( awtyp     EQ 'VBRK' OR
-                               awtyp     EQ 'RMRP' ) AND ( stblg EQ space ).
+*    INSERT LINES OF et_bkpf INTO TABLE lt_bkpf_rev.
+*    DELETE lt_bkpf_rev WHERE ( awtyp     EQ 'VBRK' OR
+*                               awtyp     EQ 'RMRP' ) AND ( stblg EQ space ).
 
-    IF lines( lt_bkpf_rev ) GT 0.
-      SELECT CompanyCode        AS bukrs ,
-             AccountingDocument AS belnr ,
-             FiscalYear         AS gjahr ,
-             PostingDate        AS budat
-             FROM i_journalentry
-             FOR ALL ENTRIES IN @lt_bkpf_rev
-             WHERE CompanyCode        EQ @lt_bkpf_rev-bukrs
-               AND AccountingDocument EQ @lt_bkpf_rev-stblg
-               AND FiscalYear         EQ @lt_bkpf_rev-stjah
-             INTO TABLE @lt_bkpf_rev_cont.
-
-      LOOP AT lt_bkpf_rev_cont INTO ls_bkpf_rev_cont.
-        DELETE et_bkpf WHERE bukrs      EQ ls_bkpf_rev_cont-bukrs
-                         AND stblg      EQ ls_bkpf_rev_cont-belnr
-                         AND stjah      EQ ls_bkpf_rev_cont-gjahr
-                         AND budat+4(2) EQ ls_bkpf_rev_cont-budat+4(2).
-      ENDLOOP.
-    ENDIF.
+*    IF lines( lt_bkpf_rev ) GT 0.
+*      SELECT CompanyCode        AS bukrs ,
+*             AccountingDocument AS belnr ,
+*             FiscalYear         AS gjahr ,
+*             PostingDate        AS budat
+*             FROM i_journalentry
+*             INNER JOIN @lt_bkpf_rev AS rev
+*             ON CompanyCode        EQ rev~bukrs
+*               AND AccountingDocument EQ rev~stblg
+*               AND FiscalYear         EQ rev~stjah
+*             INTO TABLE @lt_bkpf_rev_cont.
+*
+*      LOOP AT lt_bkpf_rev_cont INTO ls_bkpf_rev_cont.
+*        DELETE et_bkpf WHERE bukrs      EQ ls_bkpf_rev_cont-bukrs
+*                         AND stblg      EQ ls_bkpf_rev_cont-belnr
+*                         AND stjah      EQ ls_bkpf_rev_cont-gjahr
+*                         AND budat+4(2) EQ ls_bkpf_rev_cont-budat+4(2).
+*      ENDLOOP.
+*    ENDIF.
 
     IF is_read_tab-bset EQ abap_true.
       IF lines( et_bkpf ) GT 0.
@@ -148,11 +153,11 @@
            docitem~fiscalyear         = bset~fiscalyear AND
            docitem~AccountingDocumentItem = bset~TaxItem
 
-               FOR ALL ENTRIES IN @et_bkpf
-               WHERE bset~companycode EQ @et_bkpf-bukrs
-                 AND bset~Accountingdocument EQ @et_bkpf-belnr
-                 AND bset~fiscalyear EQ @et_bkpf-gjahr
-                 AND bset~taxcode IN @ir_mwskz
+               INNER JOIN @et_bkpf AS bkpf
+               ON bset~companycode EQ bkpf~bukrs
+                 AND bset~Accountingdocument EQ bkpf~belnr
+                 AND bset~fiscalyear EQ bkpf~gjahr
+*                 AND bset~taxcode IN @ir_mwskz
                 INTO TABLE @et_bset.
       ENDIF.
     ENDIF.
@@ -162,19 +167,19 @@
       IF lines( et_bset ) GT 0.
         SELECT *
              FROM I_OperationalAcctgDocItem
-             FOR ALL ENTRIES IN @et_bset
-             WHERE I_OperationalAcctgDocItem~CompanyCode        EQ @et_bset-bukrs
-               AND I_OperationalAcctgDocItem~AccountingDocument EQ @et_bset-belnr
-               AND I_OperationalAcctgDocItem~FiscalYear         EQ @et_bset-gjahr
-              INTO TABLE @et_bseg.
+             INNER JOIN @et_bset AS bset
+             ON I_OperationalAcctgDocItem~CompanyCode        EQ bset~bukrs
+               AND I_OperationalAcctgDocItem~AccountingDocument EQ bset~belnr
+               AND I_OperationalAcctgDocItem~FiscalYear         EQ bset~gjahr
+              INTO CORRESPONDING FIELDS OF TABLE @et_bseg.
       ELSEIF lines( et_bkpf ) GT 0.
         SELECT *
                FROM I_OperationalAcctgDocItem
-               FOR ALL ENTRIES IN @et_bkpf
-               WHERE I_OperationalAcctgDocItem~CompanyCode        EQ @et_bkpf-bukrs
-                 AND I_OperationalAcctgDocItem~AccountingDocument EQ @et_bkpf-belnr
-                 AND I_OperationalAcctgDocItem~FiscalYear         EQ @et_bkpf-gjahr
-                INTO TABLE @et_bseg.
+               INNER JOIN @et_bkpf AS bkpf
+               ON I_OperationalAcctgDocItem~CompanyCode        EQ bkpf~bukrs
+                 AND I_OperationalAcctgDocItem~AccountingDocument EQ bkpf~belnr
+                 AND I_OperationalAcctgDocItem~FiscalYear         EQ bkpf~gjahr
+                INTO CORRESPONDING FIELDS OF TABLE @et_bseg.
       ENDIF.
 
     ENDIF.

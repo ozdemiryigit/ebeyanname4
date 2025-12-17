@@ -579,14 +579,28 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
         READ TABLE lt_kiril1 INTO ls_kiril1 WHERE kiril1 = '109'.
         IF sy-subrc EQ 0 .
           CLEAR lv_xml.
+          DATA(lv_currentdate) = cl_abap_context_info=>get_system_date( ).
+          CLEAR lv_char_amount1.
+          IF ls_kiril1-vergi NE 0.
+            lv_char_amount1 = ls_kiril1-vergi.
+          ENDIF.
           CONCATENATE '<kdv109sorumluSifatiylaOdenenBildirimler>'
-       '<kdv109sorumluSifatiylaOdenenBildirim>'
-       '<odemeTur>1</odemeTur>'
-       '<vergilendirmeDonemi>2025102025YUK10</vergilendirmeDonemi>'
-       '<odemeMahsupDilekceTarihi>25112025</odemeMahsupDilekceTarihi>'
-       '<tutar>43534.07</tutar>'
-     '</kdv109sorumluSifatiylaOdenenBildirim>'
-     '</kdv109sorumluSifatiylaOdenenBildirimler>'
+                      '<kdv109sorumluSifatiylaOdenenBildirim>'
+                      '<odemeTur>'
+                      ls_kiril1-odeme_tur
+                      '</odemeTur>'
+                      '<vergilendirmeDonemi>'
+                      p_gjahr
+                      p_donemb
+                      '</vergilendirmeDonemi>'
+                      '<odemeMahsupDilekceTarihi>'
+                      lv_currentdate
+                      '</odemeMahsupDilekceTarihi>'
+                      '<tutar>'
+                     lv_char_amount1
+                      '</tutar>'
+                      '</kdv109sorumluSifatiylaOdenenBildirim>'
+                      '</kdv109sorumluSifatiylaOdenenBildirimler>'
        INTO lv_xml.
 
           CONCATENATE lv_xml_string
