@@ -212,13 +212,17 @@
               CLEAR ls_collect.
               ls_collect-kiril1 = ls_map-kiril1.
               ls_collect-acklm1 = ls_map-acklm1.
-              IF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
               "2
@@ -227,13 +231,17 @@
               ls_collect-acklm1 = ls_map-acklm1.
               ls_collect-kiril2 = ls_map-kiril2.
               ls_collect-acklm2 = ls_map-acklm2.
-              IF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur."Alper NANTU 26.11.2025 İşlem türü
               "<<D_ANANTU Comment
               COLLECT ls_collect INTO mt_collect.
@@ -251,13 +259,17 @@
               lv_oran_int = abs( ls_bset-kbetr ) / 10.
               ls_collect-oran = lv_oran_int.
               SHIFT ls_collect-oran LEFT DELETING LEADING space.
-              IF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
@@ -285,13 +297,17 @@
               CLEAR ls_collect.
               ls_collect-kiril1 = ls_map-kiril1.
               ls_collect-acklm1 = ls_map-acklm1.
-              IF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
@@ -301,13 +317,17 @@
               ls_collect-acklm1 = ls_map-acklm1.
               ls_collect-kiril2 = ls_map-kiril2.
               ls_collect-acklm2 = ls_map-acklm2.
-              IF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
               "<<D_ANANTU Alper NANTU Comment
               COLLECT ls_collect INTO mt_collect.
@@ -325,13 +345,17 @@
               lv_oran_int = abs( ls_bset-kbetr ) / 10.
               ls_collect-oran = lv_oran_int.
               SHIFT ls_collect-oran LEFT DELETING LEADING space.
-              IF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
@@ -386,8 +410,8 @@
                       ls_collect-kiril1 = ls_map-kiril1.
                       ls_collect-acklm1 = ls_map-acklm1.
                       IF ls_tax_voran-oran IS NOT INITIAL .
-                        CASE ls_bset-shkzg.
-                          WHEN 'H'.
+*                        CASE ls_bset-shkzg.
+*                          WHEN 'H'.
                             ls_collect-matrah   = ls_bset-hwbas.
                             ls_collect-vergi    = ( ls_bset-hwbas * ls_tax_voran-oran ) / 100.
                             lv_kbetr_h          = ( ls_tax_voran-oran * 10 ).
@@ -395,18 +419,18 @@
                             ls_collect-tevkifat = ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ).
                             ls_collect-vergi    = ls_collect-vergi + ( -1 * ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ) ).
 
-                        ENDCASE.
+*                        ENDCASE.
                       ELSE.
-                        CASE ls_bset-shkzg.
-                          WHEN 'H'.
+*                        CASE ls_bset-shkzg.
+*                          WHEN 'H'.
                             ls_collect-matrah   = ls_bset-hwbas.
                             ls_collect-vergi    = ls_bset-hwste.
                             lv_kbetr_h          = ls_bset-kbetr.
-                          WHEN 'S'.
-                            lv_kbetr_s          = ls_bset-kbetr.
-                            ls_collect-tevkifat = ls_bset-hwste.
-                            ls_collect-vergi    = -1 * ls_bset-hwste.
-                        ENDCASE.
+*                          WHEN 'S'.
+*                            lv_kbetr_s          = ls_bset-kbetr.
+*                            ls_collect-tevkifat = ls_bset-hwste.
+*                            ls_collect-vergi    = -1 * ls_bset-hwste.
+*                        ENDCASE.
                       ENDIF.
 *                      ls_collect-islem_tur = ls_transaction_type-islem_tur.
                       COLLECT ls_collect INTO mt_collect.
@@ -463,8 +487,8 @@
                     ls_collect-kiril1 = ls_map-kiril1.
                     ls_collect-acklm1 = ls_map-acklm1.
                     IF ls_tax_voran-oran IS NOT INITIAL .
-                      CASE ls_bset-shkzg.
-                        WHEN 'H'.
+*                      CASE ls_bset-shkzg.
+*                        WHEN 'H'.
                           ls_collect-matrah   = ls_bset-hwbas.
                           ls_collect-vergi    = ( ls_bset-hwbas * ls_tax_voran-oran ) / 100.
                           lv_kbetr_h          = ( ls_tax_voran-oran * 10 ).
@@ -472,18 +496,18 @@
                           ls_collect-tevkifat = ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ).
                           ls_collect-vergi    = ls_collect-vergi + ( -1 * ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ) ).
 
-                      ENDCASE.
+*                      ENDCASE.
                     ELSE.
-                      CASE ls_bset-shkzg.
-                        WHEN 'H'.
+*                      CASE ls_bset-shkzg.
+*                        WHEN 'H'.
                           ls_collect-matrah   = ls_bset-hwbas.
                           ls_collect-vergi    = ls_bset-hwste.
                           lv_kbetr_h          = ls_bset-kbetr.
-                        WHEN 'S'.
-                          lv_kbetr_s          = ls_bset-kbetr.
-                          ls_collect-tevkifat = ls_bset-hwste.
-                          ls_collect-vergi    = -1 * ls_bset-hwste.
-                      ENDCASE.
+*                        WHEN 'S'.
+*                          lv_kbetr_s          = ls_bset-kbetr.
+*                          ls_collect-tevkifat = ls_bset-hwste.
+*                          ls_collect-vergi    = -1 * ls_bset-hwste.
+*                      ENDCASE.
                     ENDIF.
 *                    ls_collect-islem_tur = ls_transaction_type-islem_tur.
                     COLLECT ls_collect INTO mt_collect.
@@ -513,16 +537,16 @@
                       ls_collect-vergi    = ls_collect-vergi + ( -1 * ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ) ).
                   ENDCASE.
                 ELSE.
-                  CASE ls_bset-shkzg.
-                    WHEN 'H'.
+*                  CASE ls_bset-shkzg.
+*                    WHEN 'H'.
                       ls_collect-matrah   = ls_bset-hwbas.
                       ls_collect-vergi    = ls_bset-hwste.
                       lv_kbetr_h          = ls_bset-kbetr.
-                    WHEN 'S'.
-                      lv_kbetr_s          = ls_bset-kbetr.
-                      ls_collect-tevkifat = ls_bset-hwste.
-                      ls_collect-vergi    = -1 * ls_bset-hwste.
-                  ENDCASE.
+*                    WHEN 'S'.
+*                      lv_kbetr_s          = ls_bset-kbetr.
+*                      ls_collect-tevkifat = ls_bset-hwste.
+*                      ls_collect-vergi    = -1 * ls_bset-hwste.
+*                  ENDCASE.
                 ENDIF.
                 COLLECT ls_collect INTO mt_collect.
                 ls_collect-kiril2 = ls_map-kiril2.
@@ -539,8 +563,8 @@
               ls_collect-kiril1 = ls_map-kiril1.
               ls_collect-acklm1 = ls_map-acklm1.
               IF ls_tax_voran-oran IS NOT INITIAL .
-                CASE ls_bset-shkzg.
-                  WHEN 'H'.
+*                CASE ls_bset-shkzg.
+*                  WHEN 'H'.
                     ls_collect-matrah   = ls_bset-hwbas.
                     ls_collect-vergi    = ( ls_bset-hwbas * ls_tax_voran-oran ) / 100.
                     lv_kbetr_h          = ( ls_tax_voran-oran * 10 ).
@@ -548,18 +572,18 @@
                     ls_collect-tevkifat = ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ).
                     ls_collect-vergi    = ls_collect-vergi + ( -1 * ( ( ls_bset-hwbas * ls_tax_voran-oran ) / 100 - ls_bset-hwste ) ).
 
-                ENDCASE.
+*                ENDCASE.
               ELSE.
-                CASE ls_bset-shkzg.
-                  WHEN 'H'.
+*                CASE ls_bset-shkzg.
+*                  WHEN 'H'.
                     ls_collect-matrah   = ls_bset-hwbas.
                     ls_collect-vergi    = ls_bset-hwste.
                     lv_kbetr_h          = ls_bset-kbetr.
-                  WHEN 'S'.
-                    lv_kbetr_s          = ls_bset-kbetr.
-                    ls_collect-tevkifat = ls_bset-hwste.
-                    ls_collect-vergi    = -1 * ls_bset-hwste.
-                ENDCASE.
+*                  WHEN 'S'.
+*                    lv_kbetr_s          = ls_bset-kbetr.
+*                    ls_collect-tevkifat = ls_bset-hwste.
+*                    ls_collect-vergi    = -1 * ls_bset-hwste.
+*                ENDCASE.
               ENDIF.
               COLLECT ls_collect INTO mt_collect.
 
@@ -850,13 +874,17 @@
             CLEAR ls_collect.
             ls_collect-kiril1 = ls_map-kiril1.
             ls_collect-acklm1 = ls_map-acklm1.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "2
@@ -865,13 +893,17 @@
             ls_collect-acklm1 = ls_map-acklm1.
             ls_collect-kiril2 = ls_map-kiril2.
             ls_collect-acklm2 = ls_map-acklm2.
-            IF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "3
@@ -887,13 +919,17 @@
             lv_oran_int = abs( ls_bset-kbetr ) .
             ls_collect-oran = lv_oran_int.
             SHIFT ls_collect-oran LEFT DELETING LEADING space.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
           ENDLOOP.
@@ -960,13 +996,17 @@
             CLEAR ls_collect.
             ls_collect-kiril1 = ls_map-kiril1.
             ls_collect-acklm1 = ls_map-acklm1.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "2
@@ -975,13 +1015,17 @@
             ls_collect-acklm1 = ls_map-acklm1.
             ls_collect-kiril2 = ls_map-kiril2.
             ls_collect-acklm2 = ls_map-acklm2.
-            IF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "3
@@ -997,13 +1041,17 @@
             lv_oran_int = abs( ls_bset-kbetr ) .
             ls_collect-oran = lv_oran_int.
             SHIFT ls_collect-oran LEFT DELETING LEADING space.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
           ENDLOOP.
@@ -1071,13 +1119,17 @@
             CLEAR ls_collect.
             ls_collect-kiril1 = ls_map-kiril1.
             ls_collect-acklm1 = ls_map-acklm1.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "2
@@ -1086,13 +1138,17 @@
             ls_collect-acklm1 = ls_map-acklm1.
             ls_collect-kiril2 = ls_map-kiril2.
             ls_collect-acklm2 = ls_map-acklm2.
-            IF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
             "3
@@ -1108,13 +1164,17 @@
             lv_oran_int = abs( ls_bset-kbetr ) .
             ls_collect-oran = lv_oran_int.
             SHIFT ls_collect-oran LEFT DELETING LEADING space.
-            IF ls_bset-shkzg EQ 'H'.
-              ls_collect-matrah = ls_bset-hwbas * -1.
-              ls_collect-vergi  = ls_bset-hwste * -1.
-            ELSEIF ls_bset-shkzg EQ 'S'.
-              ls_collect-matrah = ls_bset-hwbas.
-              ls_collect-vergi  = ls_bset-hwste.
-            ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
             COLLECT ls_collect INTO mt_collect.
             CLEAR ls_collect.
           ENDLOOP.
@@ -1275,13 +1335,17 @@
               CLEAR ls_collect.
               ls_collect-kiril1 = ls_map-kiril1.
               ls_collect-acklm1 = ls_map-acklm1.
-              IF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
               "2
@@ -1290,13 +1354,17 @@
               ls_collect-acklm1 = ls_map-acklm1.
               ls_collect-kiril2 = ls_map-kiril2.
               ls_collect-acklm2 = ls_map-acklm2.
-              IF ls_bset-shkzg EQ 'S'.
-                ls_collect-matrah = ls_bset-hwbas * -1.
-                ls_collect-vergi  = ls_bset-hwste * -1.
-              ELSEIF ls_bset-shkzg EQ 'H'.
-                ls_collect-matrah = ls_bset-hwbas.
-                ls_collect-vergi  = ls_bset-hwste.
-              ENDIF.
+*              IF ls_bset-shkzg EQ 'H'.
+*
+*                ls_collect-matrah = ls_bset-hwbas * -1.
+*                ls_collect-vergi  = ls_bset-hwste * -1.
+*
+*              ELSEIF ls_bset-shkzg EQ 'S'.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
               "3
