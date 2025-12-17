@@ -203,8 +203,8 @@
                                                        ( low =  'VST' ) ).
           IF ls_map-saknr IS NOT INITIAL.
             LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz
-                                           AND hkont EQ ls_map-saknr
-                                           AND ktosl IN lr_ktosl.
+                                           AND hkont EQ ls_map-saknr.
+*                                           AND ktosl IN lr_ktosl. "YiğitcanÖzdemir
 
 
 
@@ -277,8 +277,8 @@
 
           ELSE.
 
-            LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz
-                                           AND ktosl IN lr_ktosl.
+            LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz.
+*                                           AND ktosl IN lr_ktosl."YiğitcanÖzdemir
 
 
               "1
