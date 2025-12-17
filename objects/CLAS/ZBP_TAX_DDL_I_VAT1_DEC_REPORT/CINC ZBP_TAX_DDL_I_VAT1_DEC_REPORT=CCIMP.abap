@@ -823,7 +823,35 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
                               INTO lv_xml_string
                               SEPARATED BY space.
 
-                ELSEIF ls_kiril3-kiril1 NE '013'.
+*                ELSEIF ls_kiril3-kiril1 NE '013'.                        "YiğitcanÖzdemir 16122025 kapatıldı
+*                  CLEAR lv_xml.
+*                  CONCATENATE '<matrah>'
+*                              lv_char_amount1
+*                              '</matrah>'
+*                              INTO lv_xml.
+*                  CONDENSE lv_xml NO-GAPS.
+*
+*                  CONCATENATE lv_xml_string
+*                              lv_xml
+*                              INTO lv_xml_string
+*                              SEPARATED BY space.
+*                ENDIF.
+*                IF ls_kiril3-kiril1 NE '015'."Alper NANTU 015 için         "YiğitcanÖzdemir 16122025 kapatıldı
+
+                ELSEIF NOT ( ls_kiril3-kiril1 EQ '013' OR ls_kiril3-kiril1 EQ '034' ) . "YiğitcanÖzdemir 16122025 açıldı
+                  IF ls_kiril3-islem_tur IS NOT INITIAL.
+                    CLEAR lv_xml.
+                    CONCATENATE '<tevkifatUygulanmayanIslemTuru>'
+                                ls_kiril3-islem_tur
+                                '</tevkifatUygulanmayanIslemTuru>'
+                                INTO lv_xml.
+                    CONDENSE lv_xml NO-GAPS.
+
+                    CONCATENATE lv_xml_string
+                                lv_xml
+                                INTO lv_xml_string
+                                SEPARATED BY space.
+                  ENDIF.
                   CLEAR lv_xml.
                   CONCATENATE '<matrah>'
                               lv_char_amount1
@@ -836,7 +864,9 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
                               INTO lv_xml_string
                               SEPARATED BY space.
                 ENDIF.
-                IF ls_kiril3-kiril1 NE '015'."Alper NANTU 015 için
+                IF NOT ( ls_kiril3-kiril1 EQ '015' OR ls_kiril3-kiril1 EQ '034' ) ."Alper NANTU 015 için "YiğitcanÖzdemir 16122025 açıldı
+
+
 
                   CLEAR lv_xml.
 
