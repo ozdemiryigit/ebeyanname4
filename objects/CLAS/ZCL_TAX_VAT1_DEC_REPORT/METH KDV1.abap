@@ -206,11 +206,11 @@
 *                                           AND hkont EQ ls_map-saknr
 *                                           AND ktosl IN lr_ktosl.
 
-                "Hesapçıoğlu için hariç tutuldu.
-                IF ls_bset-hkont(3) = '198' OR ls_bset-hkont EQ '6430000001'.
+              "Hesapçıoğlu için hariç tutuldu.
+              IF ls_bset-hkont(3) = '198' OR ls_bset-hkont EQ '6430000001'.
                 CONTINUE.
-                ENDIF.
-                "Hesapçıoğlu için hariç tutuldu.
+              ENDIF.
+              "Hesapçıoğlu için hariç tutuldu.
 *              APPEND INITIAL LINE TO mt_detail ASSIGNING <fs_detail>.
 *              IF <fs_detail> IS ASSIGNED.
 *                CLEAR ls_bkpf.
@@ -327,6 +327,12 @@
 
             LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz.
 *                                           AND ktosl IN lr_ktosl.
+
+              "Hesapçıoğlu için hariç tutuldu.
+              IF ls_bset-hkont(3) = '198' OR ls_bset-hkont EQ '6430000001'.
+                CONTINUE.
+              ENDIF.
+              "Hesapçıoğlu için hariç tutuldu.
 *              APPEND INITIAL LINE TO mt_detail ASSIGNING <fs_detail>.
 *              IF <fs_detail> IS ASSIGNED.
 *                CLEAR ls_bkpf.

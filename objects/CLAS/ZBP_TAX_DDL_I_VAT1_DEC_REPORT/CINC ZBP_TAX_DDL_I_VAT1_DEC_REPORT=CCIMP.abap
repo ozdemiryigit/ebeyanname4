@@ -221,6 +221,8 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
           lv_toplam_matrah TYPE I_SalesOrder-TotalNetAmount,
           lv_toplam_kdv    TYPE I_SalesOrder-TotalNetAmount.
 
+    DATA lv_indirim_tur   TYPE string.
+
 *    me->tevkifat( ).
     FIELD-SYMBOLS <fs>       TYPE any.
     FIELD-SYMBOLS <fs_value> TYPE any.
@@ -1115,6 +1117,34 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
                               INTO lv_xml_string
                               SEPARATED BY space.
                 ENDIF.
+
+                IF lv_islem IS NOT INITIAL AND ls_kiril3-kiril1 EQ '034'.
+                  CLEAR lv_indirim_tur.
+                  lv_indirim_tur = lv_islem.
+                  SHIFT lv_indirim_tur LEFT DELETING LEADING '0'.
+                  CLEAR lv_xml.
+                  CONCATENATE '<indirimNedenTur>'
+                              lv_indirim_tur
+                              '</indirimNedenTur>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+
+                  CLEAR lv_xml.
+                  CONCATENATE '<indirimMiktar>'
+                              lv_char_amount3
+                              '</indirimMiktar>'
+                              INTO lv_xml.
+                  CONDENSE lv_xml NO-GAPS.
+                  CONCATENATE lv_xml_string
+                              lv_xml
+                              INTO lv_xml_string
+                              SEPARATED BY space.
+                ENDIF.
+
 
                 READ TABLE lt_bxmls_desc INTO ls_bxmls_desc WITH KEY kiril1 = ls_kiril1-kiril1.
                 IF sy-subrc IS INITIAL.
