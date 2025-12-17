@@ -202,9 +202,9 @@
           lr_ktosl = VALUE #( sign = 'I' option = 'EQ' ( low =  'MWS' )
                                                        ( low =  'VST' ) ).
           IF ls_map-saknr IS NOT INITIAL.
-            LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz
-                                           AND hkont EQ ls_map-saknr.
-*                                           AND ktosl IN lr_ktosl. "YiğitcanÖzdemir
+            LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz.
+*                                           AND hkont EQ ls_map-saknr.
+*                                           AND ktosl IN lr_ktosl.
 
 
 
