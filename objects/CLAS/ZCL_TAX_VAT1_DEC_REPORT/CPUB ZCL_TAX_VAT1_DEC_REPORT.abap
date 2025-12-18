@@ -72,6 +72,7 @@ CLASS zcl_tax_vat1_dec_report DEFINITION
     TYPES topalk TYPE ztax_t_kdv1g-topalk.
     TYPES shkzg  TYPE ztax_t_kdv1g-shkzg.
     TYPES islem_tur TYPE ztax_t_kdv1g-islem_tur. "YiğitcanÖzdemir
+    TYPES odeme_tur TYPE ztax_t_kdv1g-odeme_tur. "YiğitcanÖzdemir
     TYPES kural  TYPE ztax_t_k1k2s-kural.
     TYPES acklm1 TYPE ztax_t_k1k1-acklm.
     TYPES acklm2 TYPE ztax_t_k1k2-acklm.

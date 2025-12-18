@@ -10,6 +10,7 @@
            ztax_t_kdv1g~topalk ,
            ztax_t_kdv1g~shkzg  ,
            ztax_t_kdv1g~islem_tur  ,
+           ztax_t_kdv1g~odeme_tur  ,
            ztax_t_k1k2s~kural  ,
            ztax_t_k1k1~acklm  AS acklm1 ,
            ztax_t_k1k2~acklm  AS acklm2,
@@ -29,6 +30,6 @@
            INNER JOIN ztax_t_k1k2
            ON ztax_t_k1k2~kiril2 EQ ztax_t_kdv1g~kiril2
            WHERE ztax_t_kdv1g~bukrs EQ @p_bukrs
-           INTO TABLE @et_map.
+           INTO CORRESPONDING FIELDS OF TABLE @et_map.
 
   ENDMETHOD.

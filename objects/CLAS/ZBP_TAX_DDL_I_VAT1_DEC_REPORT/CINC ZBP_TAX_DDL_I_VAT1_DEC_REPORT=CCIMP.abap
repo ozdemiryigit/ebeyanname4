@@ -581,10 +581,13 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
         READ TABLE lt_kiril1 INTO ls_kiril1 WHERE kiril1 = '109'.
         IF sy-subrc EQ 0 .
           CLEAR lv_xml.
-          DATA(lv_currentdate) = cl_abap_context_info=>get_system_date( ).
+          DATA(lv_date) = cl_abap_context_info=>get_system_date( ).
+          DATA(lv_currentdate) = |{ lv_date+6(2) }{ lv_date+4(2) }{ lv_date+0(4) }|.
+
           CLEAR lv_char_amount1.
           IF ls_kiril1-vergi NE 0.
             lv_char_amount1 = ls_kiril1-vergi.
+            CONDENSE lv_char_amount1 NO-GAPS.
           ENDIF.
           CONCATENATE '<kdv109sorumluSifatiylaOdenenBildirimler>'
                       '<kdv109sorumluSifatiylaOdenenBildirim>'
@@ -679,7 +682,11 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
               LOOP AT lt_kiril3_sum INTO ls_kiril3 WHERE kiril1 EQ ls_kiril1-kiril1
                                                      AND kiril2 EQ ls_kiril2-kiril2.
 
-                IF ( ls_kiril3-matrah EQ '0.00' AND ls_kiril3-vergi EQ '0.00' ) AND ls_kiril3-kiril1 NE '030'."Kredi Kartı sıfır XML'de görünsün isteniyor.
+*                IF ( ls_kiril3-matrah EQ '0.00' AND ls_kiril3-vergi EQ '0.00' ) AND ls_kiril3-kiril1 NE '030'."Kredi Kartı sıfır XML'de görünsün isteniyor.
+                IF ( ls_kiril1-matrah EQ '0.00'
+                    AND ls_kiril1-vergi  EQ '0.00' )
+                    AND ls_kiril1-kiril1 NE '030'
+                    AND ls_kiril1-kiril1 NE '34'.
                   CONTINUE.
                 ENDIF.
                 READ TABLE lt_rule INTO ls_rule WITH KEY kiril1 = ls_kiril3-kiril1

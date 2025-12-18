@@ -161,6 +161,15 @@
     "DOMVALUE_L":"012",
     "DOMVALUE_H":"",
     "APPVAL":""
+   },
+   {
+    "DOMNAME":"ZTAX_D_KURAL",
+    "AS4LOCAL":"N",
+    "VALPOS":13,
+    "AS4VERS":0,
+    "DOMVALUE_L":"013",
+    "DOMVALUE_H":"",
+    "APPVAL":""
    }
   ]
  },
@@ -299,6 +308,17 @@
     "DOMVAL_LD":"",
     "DOMVAL_HD":"",
     "DOMVALUE_L":"012"
+   },
+   {
+    "DOMNAME":"ZTAX_D_KURAL",
+    "DDLANGUAGE":"T",
+    "AS4LOCAL":"N",
+    "VALPOS":13,
+    "AS4VERS":0,
+    "DDTEXT":"Belge Türü",
+    "DOMVAL_LD":"",
+    "DOMVAL_HD":"",
+    "DOMVALUE_L":"013"
    }
   ]
  },

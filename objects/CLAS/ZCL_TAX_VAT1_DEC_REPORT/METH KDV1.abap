@@ -297,6 +297,7 @@
 
 *              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
               "3
@@ -320,6 +321,7 @@
 *
 *              ELSEIF ls_bset-shkzg EQ 'S'.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               ls_collect-matrah = ls_bset-hwbas .
               ls_collect-vergi  = ls_bset-hwste .
 
@@ -399,6 +401,7 @@
 
 *              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
               "2
@@ -414,11 +417,13 @@
 *
 *              ELSEIF ls_bset-shkzg EQ 'S'.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               ls_collect-matrah = ls_bset-hwbas .
               ls_collect-vergi  = ls_bset-hwste .
 
 *              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               "<<D_ANANTU Alper NANTU Comment
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
@@ -448,6 +453,7 @@
 
 *              ENDIF.
               ls_collect-islem_tur = ls_map-islem_tur.
+              ls_collect-odeme_tur = ls_map-odeme_tur.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
             ENDLOOP.
@@ -1156,10 +1162,7 @@
           CLEAR ls_bseg.
           IF ls_map-kiril1 = '30'.
             LOOP AT lt_creditcart INTO DATA(ls_credit) WHERE  hkont = ls_map-saknr
-                                                           AND  blart = ls_map-blart
-                                                           AND  bukrs = p_bukrs
-                                                           AND  gjahr = p_gjahr.
-
+                                                           AND  blart = ls_map-blart.
 
 
 
@@ -1250,9 +1253,7 @@
           ELSE.
 
             LOOP AT lt_bset INTO ls_bset WHERE  hkont = ls_map-saknr
-                                                 AND  blart = ls_map-blart
-                                                 AND  bukrs = p_bukrs
-                                                 AND  gjahr = p_gjahr.
+                                                 AND  blart = ls_map-blart.
 
 
 
@@ -1345,6 +1346,78 @@
               ELSEIF ls_bset-shkzg EQ 'S'.
                 ls_collect-matrah = ls_credit-tutar.
 *              ls_collect-vergi  = ls_bset-hwste.
+              ENDIF.
+              COLLECT ls_collect INTO mt_collect.
+              CLEAR ls_collect.
+            ENDLOOP.
+
+          ENDIF.
+          IF sy-subrc IS NOT INITIAL.
+            CLEAR ls_collect.
+            ls_collect-kiril1 = ls_map-kiril1.
+            ls_collect-acklm1 = ls_map-acklm1.
+            COLLECT ls_collect INTO mt_collect.
+            ls_collect-kiril2 = ls_map-kiril2.
+            ls_collect-acklm2 = ls_map-acklm2.
+            COLLECT ls_collect INTO mt_collect.
+            ls_collect-kiril3 = ls_map-mwskz.
+            COLLECT ls_collect INTO mt_collect.
+            CLEAR ls_collect.
+          ENDIF.
+
+
+          WHEN '013'.
+          CLEAR lv_tabix.
+          CLEAR ls_bseg.
+          IF ls_map-kiril1 = '99'.
+
+
+
+            LOOP AT lt_bset INTO ls_bset WHERE  hkont = ls_map-saknr
+                                                 AND  blart = ls_map-blart.
+
+
+
+              "1
+              CLEAR ls_collect.
+              ls_collect-kiril1 = ls_map-kiril1.
+              ls_collect-acklm1 = ls_map-acklm1.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+              COLLECT ls_collect INTO mt_collect.
+              CLEAR ls_collect.
+              "2
+              CLEAR ls_collect.
+              ls_collect-kiril1 = ls_map-kiril1.
+              ls_collect-acklm1 = ls_map-acklm1.
+              ls_collect-kiril2 = ls_map-kiril2.
+              ls_collect-acklm2 = ls_map-acklm2.
+
+              ls_collect-matrah = ls_bset-hwbas .
+              ls_collect-vergi  = ls_bset-hwste .
+
+*              ENDIF.
+              COLLECT ls_collect INTO mt_collect.
+              CLEAR ls_collect.
+              "3
+              CLEAR ls_collect.
+              ls_collect-kiril1 = ls_map-kiril1.
+              ls_collect-acklm1 = ls_map-acklm1.
+              ls_collect-kiril2 = ls_map-kiril2.
+              ls_collect-acklm2 = ls_map-acklm2.
+              ls_collect-kiril3 = ls_map-mwskz.
+
+              CLEAR lv_oran_int.
+*            lv_oran_int = abs( ls_bset-kbetr ) / 10.
+              lv_oran_int = abs( ls_bset-kbetr ) .
+              ls_collect-oran = lv_oran_int.
+              SHIFT ls_collect-oran LEFT DELETING LEADING space.
+              IF ls_bset-shkzg EQ 'H'.
+                ls_collect-matrah = ls_credit-tutar * -1.
+              ELSEIF ls_bset-shkzg EQ 'S'.
+                ls_collect-matrah = ls_credit-tutar.
               ENDIF.
               COLLECT ls_collect INTO mt_collect.
               CLEAR ls_collect.
