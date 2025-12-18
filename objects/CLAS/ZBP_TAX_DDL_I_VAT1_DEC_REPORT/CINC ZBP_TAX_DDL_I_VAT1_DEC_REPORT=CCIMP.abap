@@ -594,6 +594,8 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
                       '<vergilendirmeDonemi>'
                       p_gjahr
                       p_donemb
+                      p_gjahr
+                      p_donemb
                       '</vergilendirmeDonemi>'
                       '<odemeMahsupDilekceTarihi>'
                       lv_currentdate

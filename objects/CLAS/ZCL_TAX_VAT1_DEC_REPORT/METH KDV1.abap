@@ -753,6 +753,19 @@
 **            UNASSIGN <fs_collect>.
 *          ENDIF.
         WHEN '004'."Kural 4-Önceki Dönem Hesap Bakiyesi
+
+          LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz.
+
+            ls_collect-kiril1 = ls_map-kiril1.
+            ls_collect-acklm1 = ls_map-acklm1.
+            ls_collect-vergi  = ls_bset-hwbas.
+            COLLECT ls_collect INTO mt_collect.
+
+            ls_collect-kiril2 = ls_map-kiril2.
+            ls_collect-acklm2 = ls_map-acklm2.
+            COLLECT ls_collect INTO mt_collect.
+          ENDLOOP.
+
 *          CLEAR lt_account_balances.
 *          CALL FUNCTION 'BAPI_GL_GETGLACCPERIODBALANCES'
 *            EXPORTING
