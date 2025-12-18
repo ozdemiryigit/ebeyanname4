@@ -190,6 +190,23 @@
 
     INTO TABLE @DATA(lt_creditcart)  .
 
+
+    SELECT
+    j~glaccount AS hkont,
+    SUM(   j~amountincompanycodecurrency   ) AS hwste
+      FROM i_journalentryitem AS j
+      INNER JOIN @lt_map AS map
+      ON map~saknr = j~GLAccount
+      AND map~kural = '004'
+    WHERE j~ledger = '0L'
+       AND j~companycode = @p_bukrs
+       AND j~fiscalyear = @p_gjahr
+       AND j~FiscalPeriod = @p_monat
+       AND j~isreversal = ''
+       AND j~isreversed = ''
+       GROUP BY  j~glaccount
+    INTO TABLE @DATA(lt_indirim)   .
+
     SORT lt_map BY xmlsr ASCENDING kural ASCENDING.
 
     LOOP AT lt_map INTO ls_map WHERE topal EQ space.
@@ -754,8 +771,8 @@
 *          ENDIF.
         WHEN '004'."Kural 4-Önceki Dönem Hesap Bakiyesi
 
-          LOOP AT lt_bset INTO ls_bset WHERE mwskz EQ ls_map-mwskz.
-
+          READ TABLE lt_indirim INTO DATA(ls_indirim) WHERE hkont EQ ls_map-saknr.
+          IF sy-subrc EQ 0.
             ls_collect-kiril1 = ls_map-kiril1.
             ls_collect-acklm1 = ls_map-acklm1.
             ls_collect-vergi  = ls_bset-hwbas.
@@ -764,8 +781,18 @@
             ls_collect-kiril2 = ls_map-kiril2.
             ls_collect-acklm2 = ls_map-acklm2.
             COLLECT ls_collect INTO mt_collect.
-          ENDLOOP.
+          ELSE.
+            CLEAR ls_collect.
+            ls_collect-kiril1 = ls_map-kiril1.
+            ls_collect-acklm1 = ls_map-acklm1.
+            COLLECT ls_collect INTO mt_collect.
 
+            ls_collect-kiril2 = ls_map-kiril2.
+            ls_collect-acklm2 = ls_map-acklm2.
+            COLLECT ls_collect INTO mt_collect.
+            CLEAR ls_collect.
+
+          ENDIF.
 *          CLEAR lt_account_balances.
 *          CALL FUNCTION 'BAPI_GL_GETGLACCPERIODBALANCES'
 *            EXPORTING
