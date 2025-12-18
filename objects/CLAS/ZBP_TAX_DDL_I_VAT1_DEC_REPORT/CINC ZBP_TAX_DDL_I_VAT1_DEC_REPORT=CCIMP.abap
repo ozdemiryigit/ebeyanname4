@@ -616,10 +616,12 @@ CLASS lhc_ZTAX_DDL_I_VAT1_DEC_REPORT IMPLEMENTATION.
       ENDIF.
 
       LOOP AT lt_kiril1 INTO ls_kiril1 WHERE kiril1 EQ ls_bxmls_gk1-kiril1.
+        IF ( ls_kiril1-matrah EQ '0.00'
+          AND ls_kiril1-vergi  EQ '0.00' )
+         AND ls_kiril1-kiril1 NE '030'
+         AND ls_kiril1-kiril1 NE '34'.
 
-
-
-        IF ( ls_kiril1-matrah EQ '0.00' AND ls_kiril1-vergi EQ '0.00' ) AND ( ls_kiril1-kiril1 NE '030' ).
+*        IF ( ls_kiril1-matrah EQ '0.00' AND ls_kiril1-vergi EQ '0.00' ) AND ( ls_kiril1-kiril1 NE '030' ).
           CONTINUE.
         ENDIF.
         CASE ls_bxmls_gk1-seviye .
